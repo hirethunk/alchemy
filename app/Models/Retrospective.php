@@ -29,6 +29,16 @@ class Retrospective extends Model
         return $this->hasMany(Entry::class);
     }
 
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function truths(): HasMany
+    {
+        return $this->hasMany(Truth::class);
+    }
+
     public static function fromTemplate(Team $team)
     {
         return self::create([

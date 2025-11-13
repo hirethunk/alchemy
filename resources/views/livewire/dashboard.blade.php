@@ -8,22 +8,21 @@
         <div class="mb-4">
             <flux:card>
                 <div class="flex justify-between items-start">
-                    <div class="flex flex-col gap-2">
+                    <div class="flex flex-row items-center gap-2">
                         <flux:heading size="lg">
                             {{ $team->name }}
                         </flux:heading>
                         <flux:button size="sm" inset variant="subtle" color="zinc" size="xs" icon="wrench" href="{{ route('team.view', $team) }}">Manage</flux:button>
                     </div>
-                    <div class="flex flex-col gap-2 items-end">
-                        <flux:button variant="primary" icon="plus" wire:click="createRetrospective({{ $team->id }})">Start a Retro</flux:button>
-                        <div class="flex items-center gap-2">
+                    <div class="flex flex-row items-center gap-2">
+                        <div class="flex items-center text-xs gap-2">
                             @if ($lastRetroDate !== null)
-                                <flux:text>Next Retro due</flux:text>
-                                <flux:badge size="xs" :color="$isOverdue ? 'red' : 'green'">
-                                    {{ $nextRetroDate->diffForHumans() }}
+                                <flux:badge size="sm" :color="$isOverdue ? 'red' : 'zinc'">
+                                    Next Retro due {{ $nextRetroDate->diffForHumans() }}
                                 </flux:badge>
                             @endif
                         </div>
+                        <flux:button variant="primary" size="sm" icon="plus" wire:click="createRetrospective({{ $team->id }})">Start a Retro</flux:button>
                     </div>
                 </div>
                 @if ($team->retrospectives->isNotEmpty())
