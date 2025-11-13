@@ -1,10 +1,11 @@
 <?php
 
 use App\Livewire\Dashboard;
-use App\Livewire\ManageTeamPage;
-use App\Livewire\RetrospectivePage;
 use Laravel\Fortify\Features;
+use App\Livewire\CreateTeamPage;
+use App\Livewire\ManageTeamPage;
 use App\Livewire\Settings\Profile;
+use App\Livewire\RetrospectivePage;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\TwoFactor;
 use App\Livewire\Settings\Appearance;
@@ -14,15 +15,19 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('dashboard', Dashboard::class)
+Route::get('/team/create', CreateTeamPage::class)
+    ->middleware(['auth', 'verified'])
+    ->name('team.create');
+
+Route::get('/dashboard', Dashboard::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::get('team/{team}', ManageTeamPage::class)
+Route::get('/team/{team}', ManageTeamPage::class)
     ->middleware(['auth', 'verified'])
     ->name('team.view');
 
-Route::get('retrospective/{retrospective}', RetrospectivePage::class)
+Route::get('/retrospective/{retrospective}', RetrospectivePage::class)
     ->name('retrospective.view');
 
 Route::middleware(['auth'])->group(function () {

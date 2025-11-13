@@ -22,8 +22,13 @@ class Team extends Model
         return $this->hasMany(Retrospective::class);
     }
 
-    public function lastRetroDate(): Carbon
+    public function getLastRetroDateAttribute(): Carbon | null
     {
-        return $this->retrospectives()->orderBy('date', 'desc')->first()->date;
+        return $this->retrospectives()->orderBy('date', 'desc')->first()?->date;
+    }
+
+    public function entries(): HasMany
+    {
+        return $this->hasMany(Entry::class);
     }
 }
