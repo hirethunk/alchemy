@@ -22,8 +22,8 @@ class Team extends Model
         return $this->hasMany(Retrospective::class);
     }
 
-    public function nextRetroDueBy(): Carbon
+    public function lastRetroDate(): Carbon
     {
-        return $this->retrospectives()->orderBy('date', 'desc')->first()->date->addDays($this->retro_cycle_in_days);
+        return $this->retrospectives()->orderBy('date', 'desc')->first()->date;
     }
 }

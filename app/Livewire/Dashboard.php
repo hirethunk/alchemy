@@ -16,7 +16,7 @@ class Dashboard extends Component
     #[Computed]
     public function teams()
     {
-        return auth()->user()->teams;
+        return auth()->user()->teams()->with('retrospectives')->get();
     }
 
     public function render()
