@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
             $table->text('description');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('retrospective_id')->constrained()->onDelete('cascade');
             $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->foreignId('created_by_user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('status', ['not_started', 'in_progress', 'completed'])->default('not_started');
             $table->timestamps();
         });

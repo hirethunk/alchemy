@@ -17,7 +17,10 @@ class Dashboard extends Component
     #[Computed]
     public function teams()
     {
-        return auth()->user()->teams()->with('retrospectives')->orderBy('last_retro_date', 'desc')->limit(5)->get();
+        return auth()->user()->teams()
+            ->with('retrospectives')->orderBy('last_retro_date', 'desc')->limit(5)
+            ->with('tasks')->where('status', '!=', 'completed')
+            ->get();
     }
 
     public function createRetrospective(int $team_id)

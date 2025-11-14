@@ -40,6 +40,12 @@ class ManageTeamPage extends Component
     }
 
     #[Computed]
+    public function outstandingTasks()
+    {
+        return $this->tasks->where('status', '!=', 'completed');
+    }
+
+    #[Computed]
     public function truths()
     {
         return $this->team->truths;
@@ -49,6 +55,15 @@ class ManageTeamPage extends Component
     public function isDirty()
     {
         return $this->name !== $this->team->name || (int) $this->retro_cycle_in_days !== $this->team->retro_cycle_in_days;
+    }
+
+    #[Computed]
+    public function teamMemberOptions()
+    {
+        return $this->team->users->map(fn($user) => [
+            'value' => $user->id,
+            'label' => $user->name,
+        ])->toArray();
     }
 
     public function mount(Team $team)
@@ -75,10 +90,36 @@ class ManageTeamPage extends Component
 
         $this->team->refresh();
         unset($this->tasks);
+        unset($this->outstandingTasks);
 
         Flux::toast(
             variant: 'success',
             text: 'Task status updated',
+        );
+    }
+
+    public function updateTaskUser(int $task_id, $user_id)
+    {
+        $task = Task::find($task_id);
+
+        if (!$task) {
+            Flux::toast(
+                variant: 'danger',
+                text: 'Task not found',
+            );
+            return;
+        }
+
+        $task->user_id = $user_id ?: null;
+        $task->save();
+
+        $this->team->refresh();
+        unset($this->tasks);
+        unset($this->outstandingTasks);
+
+        Flux::toast(
+            variant: 'success',
+            text: 'Task assignee updated',
         );
     }
 

@@ -63,6 +63,15 @@ class User extends Authenticatable
             ->implode('');
     }
 
+    /**
+     * Get the user's Gravatar URL
+     */
+    public function gravatar(int $size = 80): string
+    {
+        $hash = md5(strtolower(trim($this->email)));
+        return "https://www.gravatar.com/avatar/{$hash}?s={$size}&d=404";
+    }
+
     public function teams(): BelongsToMany
     {
         return $this->belongsToMany(Team::class);

@@ -19,13 +19,18 @@ class RetrospectivePage extends Component
     public string $entry_content = '';
     public ?int $editing_entry_id = null;
 
-    public string $task_title = '';
     public string $task_description = '';
     public ?int $task_user_id = null;
     public ?int $editing_task_id = null;
 
     public string $truth_description = '';
     public ?int $editing_truth_id = null;
+
+    #[Computed]
+    public function user()
+    {
+        return auth()->user();
+    }
 
     #[Computed]
     public function entries()
@@ -134,6 +139,7 @@ class RetrospectivePage extends Component
                 'content' => $this->entry_content,
                 'team_id' => $this->retrospective->team_id,
                 'retrospective_id' => $this->retrospective->id,
+                'created_by_user_id' => $this->user->id,
             ]);
             $message = $this->entry_type === 'what_went_well' ? 'Positive added' : 'Improvement added';
         }
@@ -159,7 +165,6 @@ class RetrospectivePage extends Component
         }
 
         $this->editing_task_id = $task_id;
-        $this->task_title = $task->title;
         $this->task_description = $task->description;
         $this->task_user_id = $task->user_id;
     }
@@ -167,7 +172,6 @@ class RetrospectivePage extends Component
     public function resetTaskForm()
     {
         $this->editing_task_id = null;
-        $this->task_title = '';
         $this->task_description = '';
         $this->task_user_id = null;
     }
@@ -181,25 +185,23 @@ class RetrospectivePage extends Component
     public function addTask()
     {
         $this->validate([
-            'task_title' => 'required|string|max:255',
             'task_description' => 'required|string',
         ]);
 
         if ($this->editing_task_id) {
             $task = $this->tasks->firstWhere('id', $this->editing_task_id);
             $task->update([
-                'title' => $this->task_title,
                 'description' => $this->task_description,
                 'user_id' => $this->task_user_id,
             ]);
             $message = 'Task updated';
         } else {
             $this->retrospective->tasks()->create([
-                'title' => $this->task_title,
                 'description' => $this->task_description,
                 'user_id' => $this->task_user_id,
                 'team_id' => $this->retrospective->team_id,
                 'retrospective_id' => $this->retrospective->id,
+                'created_by_user_id' => $this->user->id,
             ]);
             $message = 'Task added';
         }
@@ -209,10 +211,9 @@ class RetrospectivePage extends Component
         Flux::toast(
             variant: 'success',
             heading: $message,
-            text: $this->task_title,
+            text: $this->task_description,
         );
 
-        $this->task_title = '';
         $this->task_description = '';
         $this->task_user_id = null;
         $this->editing_task_id = null;
@@ -233,7 +234,7 @@ class RetrospectivePage extends Component
     public function addTruth()
     {
         $this->validate([
-            'truth_description' => 'required|string',
+            'truth_description' => 'required|string|max:200',
         ]);
 
         if ($this->editing_truth_id) {
@@ -247,6 +248,7 @@ class RetrospectivePage extends Component
                 'description' => $this->truth_description,
                 'team_id' => $this->retrospective->team_id,
                 'retrospective_id' => $this->retrospective->id,
+                'created_by_user_id' => $this->user->id,
             ]);
             $message = 'Truth added';
         }
@@ -284,6 +286,30 @@ class RetrospectivePage extends Component
         Flux::toast(
             variant: 'success',
             text: 'Task status updated',
+        );
+    }
+
+    public function updateTaskUser(int $task_id, $user_id)
+    {
+        $task = Task::find($task_id);
+
+        if (!$task) {
+            Flux::toast(
+                variant: 'danger',
+                text: 'Task not found',
+            );
+            return;
+        }
+
+        $task->user_id = $user_id ?: null;
+        $task->save();
+
+        $this->retrospective->refresh();
+        unset($this->tasks);
+
+        Flux::toast(
+            variant: 'success',
+            text: 'Task assignee updated',
         );
     }
 

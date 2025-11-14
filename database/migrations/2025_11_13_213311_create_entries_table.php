@@ -15,6 +15,7 @@ return new class extends Migration
             $table->integer('upvotes')->default(0);
             $table->foreignId('retrospective_id')->constrained()->onDelete('cascade');
             $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->foreignId('created_by_user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }
