@@ -3,8 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Truth extends Model
 {
-    //
+    protected $guarded = [];
+
+    public function retrospective(): BelongsTo
+    {
+        return $this->belongsTo(Retrospective::class);
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

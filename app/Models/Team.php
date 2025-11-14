@@ -31,4 +31,14 @@ class Team extends Model
     {
         return $this->hasMany(Entry::class);
     }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function truths(): HasMany
+    {
+        return $this->hasMany(Truth::class);
+    }
 }

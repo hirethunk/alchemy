@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->nullable();
             $table->foreignId('retrospective_id')->constrained()->onDelete('cascade');
             $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->enum('status', ['not_started', 'in_progress', 'completed'])->default('not_started');
             $table->timestamps();
         });
     }

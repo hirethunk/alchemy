@@ -1,9 +1,9 @@
 <div class="flex flex-col gap-4">
     <flux:card>
         <div class="flex justify-between items-center">
-            <flux:heading size="lg">
+            <flux:link size="lg" href="{{ route('team.view', $this->retrospective->team) }}">
                 {{ $this->retrospective->team->name }}
-            </flux:heading>
+            </flux:link>
             <flux:heading size="lg" class="flex items-center gap-2">
                 {{ $this->retrospective->date->format('M d, Y') }}
                 <flux:modal.trigger name="edit-date">
@@ -18,6 +18,7 @@
             <flux:table>
                 <flux:table.columns>
                     <flux:table.column>What went well?</flux:table.column>
+                    <flux:table.column></flux:table.column>
                 </flux:table.columns>
 
                 @foreach ($this->whatWentWellEntries as $entry)
@@ -25,17 +26,20 @@
                         <flux:table.cell>
                             {{ $entry->content }}
                         </flux:table.cell>
+                        <flux:table.cell class="text-right">
+                            <flux:modal.trigger name="add-entry">
+                                <flux:button variant="ghost" size="sm" icon="pencil" wire:click="editEntry({{ $entry->id }})"></flux:button>
+                            </flux:modal.trigger>
+                        </flux:table.cell>
                     </flux:table.row>
                 @endforeach
-
-                <flux:table.row>
-                    <flux:table.cell>
-                        <flux:modal.trigger name="add-entry">
-                            <flux:button variant="primary" size="sm" icon="plus" wire:click="setEntryType('what_went_well')">Add</flux:button>
-                        </flux:modal.trigger>
-                    </flux:table.cell>
-                </flux:table.row>
             </flux:table>
+
+            <div class="flex mt-4">
+                <flux:modal.trigger name="add-entry">
+                    <flux:button size="sm" icon="plus" wire:click="setEntryType('what_went_well')">Add</flux:button>
+                </flux:modal.trigger>
+            </div>
         </flux:card>
     </div>
 
@@ -44,6 +48,7 @@
             <flux:table>
                 <flux:table.columns>
                     <flux:table.column>What could improve?</flux:table.column>
+                    <flux:table.column></flux:table.column>
                 </flux:table.columns>
 
                 @foreach ($this->whatCouldImproveEntries as $entry)
@@ -51,17 +56,20 @@
                         <flux:table.cell>
                             {{ $entry->content }}
                         </flux:table.cell>
+                        <flux:table.cell class="text-right">
+                            <flux:modal.trigger name="add-entry">
+                                <flux:button variant="ghost" size="sm" icon="pencil" wire:click="editEntry({{ $entry->id }})"></flux:button>
+                            </flux:modal.trigger>
+                        </flux:table.cell>
                     </flux:table.row>
                 @endforeach
-
-                <flux:table.row>
-                    <flux:table.cell>
-                        <flux:modal.trigger name="add-entry">
-                            <flux:button variant="primary" size="sm" icon="plus" wire:click="setEntryType('what_could_improve')">Add</flux:button>
-                        </flux:modal.trigger>
-                    </flux:table.cell>
-                </flux:table.row>
             </flux:table>
+
+            <div class="flex mt-4">
+                <flux:modal.trigger name="add-entry">
+                    <flux:button size="sm" icon="plus" wire:click="setEntryType('what_could_improve')">Add</flux:button>
+                </flux:modal.trigger>
+            </div>
         </flux:card>
     </div>
 
@@ -72,6 +80,8 @@
                     <flux:table.column>What specific actions should we take after this?</flux:table.column>
                     <flux:table.column></flux:table.column>
                     <flux:table.column>Assigned to</flux:table.column>
+                    <flux:table.column>Status</flux:table.column>
+                    <flux:table.column></flux:table.column>
                 </flux:table.columns>
 
                 @foreach ($this->tasks as $task)
@@ -85,19 +95,39 @@
                         <flux:table.cell>
                             {{ $task->user?->name }}
                         </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:select variant="listbox" wire:change="updateTaskStatus({{ $task->id }}, $event.target.value)">
+                                <flux:select.option value="not_started" :selected="($task->status ?? 'not_started') === 'not_started'">
+                                    <div class="flex items-center gap-2">
+                                        <flux:icon variant="solid" name="stop" class="text-slate-500" /> Not started
+                                    </div>
+                                </flux:select.option>
+                                <flux:select.option value="in_progress" :selected="($task->status ?? 'not_started') === 'in_progress'">
+                                    <div class="flex items-center gap-2">
+                                        <flux:icon variant="solid" name="play" class="text-yellow-500" /> In progress
+                                    </div>
+                                </flux:select.option>
+                                <flux:select.option value="completed" :selected="($task->status ?? 'not_started') === 'completed'">
+                                    <div class="flex items-center gap-2">
+                                        <flux:icon variant="solid" name="check-circle" class="text-green-500" /> Completed
+                                    </div>
+                                </flux:select.option>
+                            </flux:select>
+                        </flux:table.cell>
+                        <flux:table.cell class="text-right">
+                            <flux:modal.trigger name="add-task">
+                                <flux:button variant="ghost" size="sm" icon="pencil" wire:click="editTask({{ $task->id }})"></flux:button>
+                            </flux:modal.trigger>
+                        </flux:table.cell>
                     </flux:table.row>
                 @endforeach
-
-                <flux:table.row>
-                    <flux:table.cell>
-                        <flux:modal.trigger name="add-task">
-                            <flux:button variant="primary" size="sm" icon="plus" wire:click="setEntryType('what_could_improve')">Add</flux:button>
-                        </flux:modal.trigger>
-                    </flux:table.cell>
-                    <flux:table.cell></flux:table.cell>
-                    <flux:table.cell></flux:table.cell>
-                </flux:table.row>
             </flux:table>
+
+            <div class="flex mt-4">
+                <flux:modal.trigger name="add-task">
+                    <flux:button size="sm" icon="plus" wire:click="resetTaskForm">Add</flux:button>
+                </flux:modal.trigger>
+            </div>
         </flux:card>
     </div>
 
@@ -107,7 +137,6 @@
                 <flux:table.columns>
                     <flux:table.column>Which evergreen truths revealed themselves during this retrospective?</flux:table.column>
                     <flux:table.column></flux:table.column>
-                    <flux:table.column>Assigned to</flux:table.column>
                 </flux:table.columns>
 
                 @foreach ($this->truths as $truth)
@@ -115,17 +144,20 @@
                         <flux:table.cell>
                             {{ $truth->description }}
                         </flux:table.cell>
+                        <flux:table.cell class="text-right">
+                            <flux:modal.trigger name="add-truth">
+                                <flux:button variant="ghost" size="sm" icon="pencil" wire:click="editTruth({{ $truth->id }})"></flux:button>
+                            </flux:modal.trigger>
+                        </flux:table.cell>
                     </flux:table.row>
                 @endforeach
-
-                <flux:table.row>
-                    <flux:table.cell>
-                        <flux:modal.trigger name="add-truth">
-                            <flux:button variant="primary" size="sm" icon="plus">Add</flux:button>
-                        </flux:modal.trigger>
-                    </flux:table.cell>
-                </flux:table.row>
             </flux:table>
+
+            <div class="flex mt-4">
+                <flux:modal.trigger name="add-truth">
+                    <flux:button size="sm" icon="plus" wire:click="resetTruthForm">Add</flux:button>
+                </flux:modal.trigger>
+            </div>
         </flux:card>
     </div>
 
@@ -150,7 +182,7 @@
             <flux:textarea label="{{ $entry_type === 'what_went_well' ? 'What went well?' : 'What could improve?' }}" wire:model="entry_content" placeholder="Communication with the support team has felt much better." />
             <div class="flex">
                 <flux:spacer />
-                <flux:button variant="primary" wire:click="addEntry">Add</flux:button>
+                <flux:button variant="primary" wire:click="addEntry">{{ $editing_entry_id ? 'Update' : 'Add' }}</flux:button>
             </div>
         </div>
     </flux:modal>
@@ -167,7 +199,7 @@
             </flux:select>
             <div class="flex">
                 <flux:spacer />
-                <flux:button variant="primary" wire:click="addTask">Add</flux:button>
+                <flux:button variant="primary" wire:click="addTask">{{ $editing_task_id ? 'Update' : 'Add' }}</flux:button>
             </div>
         </div>
     </flux:modal>
@@ -177,7 +209,7 @@
             <flux:textarea label="Truth" wire:model="truth_description" placeholder="Truth" />
             <div class="flex">
                 <flux:spacer />
-                <flux:button variant="primary" wire:click="addTruth">Add</flux:button>
+                <flux:button variant="primary" wire:click="addTruth">{{ $editing_truth_id ? 'Update' : 'Add' }}</flux:button>
             </div>
         </div>
     </flux:modal>

@@ -12,7 +12,7 @@
                         <flux:heading size="lg">
                             {{ $team->name }}
                         </flux:heading>
-                        <flux:button size="sm" inset variant="subtle" color="zinc" size="xs" icon="wrench" href="{{ route('team.view', $team) }}">Manage</flux:button>
+                        <flux:button size="sm" variant="subtle" color="zinc" size="xs" icon="wrench" href="{{ route('team.view', $team) }}">Manage</flux:button>
                     </div>
                     <div class="flex flex-row items-center gap-2">
                         <div class="flex items-center text-xs gap-2">
@@ -36,8 +36,8 @@
                             @foreach ($team->retrospectives as $retrospective)
                                 <flux:table.row>
                                     <flux:table.cell>{{ $retrospective->date->format('M d, Y') }}</flux:table.cell>
-                                    <flux:table.cell>
-                                        <flux:button size="sm" variant="outline" color="zinc">View</flux:button>
+                                    <flux:table.cell class="text-right">
+                                        <flux:button size="sm" variant="outline" icon="eye" color="zinc" href="{{ route('retrospective.view', $retrospective) }}">View</flux:button>
                                     </flux:table.cell>
                                 </flux:table.row>
                             @endforeach
