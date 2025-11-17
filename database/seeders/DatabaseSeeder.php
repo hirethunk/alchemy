@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
+        return;
+
         $teams = collect([
             [
                 'name' => 'InterNACHI',
