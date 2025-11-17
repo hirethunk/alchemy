@@ -18,8 +18,15 @@ class Dashboard extends Component
     public function teams()
     {
         return auth()->user()->teams()
-            ->with('retrospectives')->orderBy('last_retro_date', 'desc')->limit(5)
-            ->with('tasks')->where('status', '!=', 'completed')
+            ->with([
+                'retrospectives' => function($query) {
+                    $query->with('tasks')
+                        ->orderBy('date', 'desc')
+                        ->limit(5);
+                }
+            ])
+            ->orderBy('last_retro_date', 'desc')
+            ->limit(5)
             ->get();
     }
 
