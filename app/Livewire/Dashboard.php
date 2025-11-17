@@ -25,9 +25,10 @@ class Dashboard extends Component
                         ->limit(5);
                 }
             ])
-            ->orderBy('last_retro_date', 'desc')
-            ->limit(5)
-            ->get();
+            ->get()
+            ->sortByDesc('last_retro_date')
+            ->take(5)
+            ->values();
     }
 
     public function createRetrospective(int $team_id)
