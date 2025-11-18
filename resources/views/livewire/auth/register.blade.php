@@ -16,6 +16,7 @@
                 required
                 autofocus
                 autocomplete="name"
+                value="{{ old('name') }}"
                 :placeholder="__('Full name')"
             />
 
@@ -26,6 +27,7 @@
                 type="email"
                 required
                 autocomplete="email"
+                value="{{ old('email') }}"
                 placeholder="email@example.com"
             />
 
@@ -36,6 +38,7 @@
                 type="password"
                 required
                 autocomplete="new-password"
+                value="{{ old('password') }}"
                 :placeholder="__('Password')"
                 viewable
             />
@@ -47,6 +50,7 @@
                 type="password"
                 required
                 autocomplete="new-password"
+                value="{{ old('password_confirmation') }}"
                 :placeholder="__('Confirm password')"
                 viewable
             />
