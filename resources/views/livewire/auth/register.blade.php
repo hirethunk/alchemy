@@ -38,7 +38,6 @@
                 type="password"
                 required
                 autocomplete="new-password"
-                value="{{ old('password') }}"
                 :placeholder="__('Password')"
                 viewable
             />
@@ -50,7 +49,6 @@
                 type="password"
                 required
                 autocomplete="new-password"
-                value="{{ old('password_confirmation') }}"
                 :placeholder="__('Confirm password')"
                 viewable
             />
