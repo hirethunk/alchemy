@@ -16,6 +16,7 @@
                 required
                 autofocus
                 autocomplete="name"
+                value="{{ old('name') }}"
                 :placeholder="__('Full name')"
             />
 
@@ -26,6 +27,7 @@
                 type="email"
                 required
                 autocomplete="email"
+                value="{{ old('email') }}"
                 placeholder="email@example.com"
             />
 
